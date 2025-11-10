@@ -1,17 +1,23 @@
-# Use official Java 17 base image
+# ✅ 1. Use stable OpenJDK base
 FROM eclipse-temurin:17-jdk-jammy
 
-# Set working directory
+# ✅ 2. Set working directory
 WORKDIR /app
 
-# Copy project files
+# ✅ 3. Install Maven
+RUN apt-get update && apt-get install -y maven
+
+# ✅ 4. Copy project files
 COPY . .
 
-# Build jar
-RUN ./mvnw clean package -DskipTests || mvn clean package -DskipTests
+# ✅ 5. Give permission to Maven wrapper (if present)
+RUN chmod +x mvnw || true
 
-# Expose port
+# ✅ 6. Build JAR file
+RUN mvn clean package -DskipTests
+
+# ✅ 7. Expose port (Render uses PORT env)
 EXPOSE 8080
 
-# Run Spring Boot jar
+# ✅ 8. Run the application
 CMD ["java", "-jar", "target/cdaxVideo-0.0.1-SNAPSHOT.jar"]
