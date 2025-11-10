@@ -1,17 +1,17 @@
-# Use official OpenJDK 17 image
-FROM openjdk:17-jdk-slim
+# Use official Java 17 base image
+FROM eclipse-temurin:17-jdk-jammy
 
-# Set working directory inside container
+# Set working directory
 WORKDIR /app
 
-# Copy Maven wrapper + pom.xml and source code
+# Copy project files
 COPY . .
 
-# Build the project
+# Build jar
 RUN ./mvnw clean package -DskipTests || mvn clean package -DskipTests
 
-# Expose port (Render auto assigns PORT, but default is 8080)
+# Expose port
 EXPOSE 8080
 
-# Run Spring Boot JAR file
+# Run Spring Boot jar
 CMD ["java", "-jar", "target/cdaxVideo-0.0.1-SNAPSHOT.jar"]
