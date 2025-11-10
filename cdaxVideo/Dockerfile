@@ -1,14 +1,17 @@
-# Step 1: Use official OpenJDK image
+# Use official OpenJDK 17 image
 FROM openjdk:17-jdk-slim
 
-# Step 2: Set working directory
+# Set working directory inside container
 WORKDIR /app
 
-# Step 3: Copy the JAR from Maven target folder
-COPY target/*.jar app.jar
+# Copy Maven wrapper + pom.xml and source code
+COPY . .
 
-# Step 4: Expose the port (Render provides it dynamically)
+# Build the project
+RUN ./mvnw clean package -DskipTests || mvn clean package -DskipTests
+
+# Expose port (Render auto assigns PORT, but default is 8080)
 EXPOSE 8080
 
-# Step 5: Run the app
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Run Spring Boot JAR file
+CMD ["java", "-jar", "target/cdaxVideo-0.0.1-SNAPSHOT.jar"]
